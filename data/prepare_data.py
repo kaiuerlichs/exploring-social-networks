@@ -4,59 +4,41 @@ data_orig = open("./facebook_combined.txt","r")
 # Finds the total amount of friends
 # In: file
 def friendsTotal(file):
-    
     # Lines is set to the read in lines of file
     lines = file.readlines()
 
     #Output array is initialised empty
     output = []
-    
-    #Previous is set to -1
-    previous = -1
+
+    for i in range(0,4039):
+        output.append(str(i) + " 0\n")
 
     # Variables for Kai's progress indicator
-    percentage_step = 4039/100
+    percentage_step = 88234/100
     count = 1
+    lineNo = 0
     
     #For every line in lines
     for line in lines:
-        
-        #tokensOuter is set to the split result of line
-        tokensOuter = line.split()
-        
-        # If tokensOuter[0] is equal to previous then continue
-        if(tokensOuter[0] == previous):
-            continue
+        tokens = line.split()
+        lineNo += 1
 
         # Kai's percentage counter to show an indicator of progress
-        if(int(tokensOuter[0]) > count*percentage_step):
+        if(lineNo > count*percentage_step):
             print(str(count) + "%")
             count +=1
-        
-        # Friends is set to 0
-        friends = 0
-        # Previous is set to whatever is in position 0 of tokensOuter
-        previous = tokensOuter[0]
 
-        # For every line in lines
-        for line in lines:
-            #tokensInner is set to the result of line.split()
-            tokensInner = line.split()
-            
-            #If tokensOuter[0] matches tokenInner[0] or [1] then increment friends
-            if(tokensOuter[0] == tokensInner[0] or tokensOuter[0] == tokensInner[1]):
-                friends += 1
+        for token in tokens:
+            entry = output[int(token)]
+            entry_tokens = entry.split()
+            output[int(token)] = token + " " + str(int(entry_tokens[1])+1) + "\n"
 
-        # tokensOuter[0] and friends are appended to output
-        output.append([tokensOuter[0],str(friends)])
-
-        #Opens or creates new output file
-        file_output = open("./nodeFriends.txt","w")
-        
-        # For every tuple in output
-        for tuple in output:
-            # tuple[0] & tuple[1] are written to file
-            file_output.write(tuple[0] + " " + tuple[1] + "\n")
+    #Opens or creates new output file
+    file_output = open("./nodeFriends.txt","w")
+    
+    # For every tuple in output
+    for line in output:
+        file_output.write(line)
 
 # Method to find the edges with shared friends
 # In: file
@@ -125,7 +107,27 @@ def edgesWithSharedFriends(file):
 
     print("100%")
 
+def friendsLists(data):
+    lines = data.readlines()
+
+    output = [None] * 4039
+
+    for i in range(0,4039):
+        output[i] = str(i)
+
+    for line in lines:
+        tuple = line.split()
+        if(int(tuple[1]) > 4030):
+            print(tuple)
+        output[int(tuple[0])] += (" " + tuple[1])
+        output[int(tuple[1])] += (" " + tuple[0])
+
+    outfile = open("./friendsLists.txt","w")
+
+    for o in output:
+        outfile.write(o + "\n")
 
 #Top Level
 # friendsTotal(data_orig)
-edgesWithSharedFriends(data_orig)
+# edgesWithSharedFriends(data_orig)
+friendsLists(data_orig)
