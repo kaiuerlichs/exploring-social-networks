@@ -5,7 +5,8 @@ from tkinter import ttk # Combobox stuff
 from tkinter.messagebox import showinfo # For pop ups
 import os
 import problems #Imports search methods
-
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 ###Gets All Nodes from File nodeFriends.txt
@@ -46,14 +47,14 @@ class MainWindow(Frame):
         def help_popup():
             showinfo(
                 title="Help",
-                message=f'Enter a valid number between 0 - 4038 which are not identical in the input boxes.\n\nThen select the search algorithm to use from the list which will find the shortest path of mutual relations the two selected nodes have.\n\nFinally press "Go" to get your results.'
+                message=f'Enter a valid number between 0-4038 into each of the input boxes.\n\nThen select the search algorithm to use from the list which will find the shortest path within the social network to connect the nodes.\n\nClick the button to start the search.'
             )
 
         # Show about popup
         def about_popup():
             showinfo(
                 title="About",
-                message=f'A simple desktop interface for the user to play about with the implemented search algorithms and the dataset'
+                message=f'A sophisticated desktop GUI to interact with the SNAP Facebook data and run various search algorithms.\n\nCopyright (C) Ross Coombs, Heather Currie, Kamil Krauze, Caitlin Ridge-Skyes, Kai Uerlichs'
             )
 
         # Run search
@@ -139,7 +140,7 @@ class MainWindow(Frame):
             elif search == "Depth First Search":
                 solution = problems.depth_first_search(problem)
                 #If search equals depth limited, calls that search from problems.
-            elif search == "Depth Limited Search":
+            elif search == "Depth Limited Search with limit=6":
                 solution = problems.depth_limited_search(problem, limit=6)
             #If search equals iterative deepening depth first, calls that search from problems.
             elif search == "Iterative Deepening Depth First Search":
@@ -220,10 +221,12 @@ class MainWindow(Frame):
         tabControl = ttk.Notebook(self.master)
         tabSearch = ttk.Frame(tabControl, width=600, height=480, padding=10)
         tabData = ttk.Frame(tabControl, width=600, height=480, padding=10)
+        tabVisualise = ttk.Frame(tabControl, width=600, height=480, padding=10)
         tabAlgorithms = ttk.Frame(tabControl, width=600, height=480, padding=10)
         tabControl.add(tabSearch, text='Run a Search')
         tabControl.add(tabData, text='Data Explorer')
         tabControl.add(tabAlgorithms, text='Search Algorithms')
+        tabControl.add(tabVisualise, text="Visualisation")
         tabControl.pack(fill="both", expand=True)
 
 
@@ -300,7 +303,7 @@ class MainWindow(Frame):
         algosrch_cb['values'] = ["Bi-directional Breadth-first Search",
                                 "Uni-directional Breadth-first Search",
                                 "Depth First Search",
-                                "Depth Limited Search",
+                                "Depth Limited Search with limit=6",
                                 "Iterative Deepening Depth First Search"]
         algosrch_cb['state'] = 'readonly' # Makes it readonly
         algosrch_cb.current(0)
@@ -354,6 +357,79 @@ class MainWindow(Frame):
             table.insert('', END, values=node)
         table.bind("<Double-1>", on_node_selected)
         table.grid(row=6, columnspan=2, sticky="w")
+
+        # --------------------------------------------------------------------------------------------------------------
+
+        # tabVisualise -------------------------------------------------------------------------------------------------
+
+        def openNetworkGraph(min, max,path_edges):
+
+            def on_path(a, b):
+                return ((a,b) in path_edges or (b,a) in path_edges)
+
+            G = nx.Graph()
+            G.add_nodes_from(range(min,max+1))
+
+            lines = open(os.path.dirname(__file__) + "/../data/edges.txt").readlines()
+            for line in lines:
+                tok = line.split()
+                if(int(tok[0]) < min):
+                    pass
+                elif(int(tok[0]) > max):
+                    break
+                
+                if(int(tok[1]) >= min and int(tok[1]) <= max):
+                    if(on_path(int(tok[0]), int(tok[1]))):
+                        G.add_edge(int(tok[0]), int(tok[1]), color="red", weight=2)
+                    else:
+                        G.add_edge(int(tok[0]), int(tok[1]), color="grey", weight=0.1)
+
+            colors = nx.get_edge_attributes(G,'color').values()
+            weights = nx.get_edge_attributes(G,'weight').values()
+
+            nx.draw(G, with_labels=True, edge_color=colors, node_size=15, font_size=8, node_color="skyblue", width=list(weights))
+            plt.show()
+
+
+        def initialiseNetworkGraph():
+            min = int(min_input.get())
+            max = int(max_input.get())
+            path = path_input.get().split(" ▶ ")
+            if(len(path) == 1):
+                path = path_input.get().split(",")
+
+            print(path)
+
+            path_edges = []
+            for i in range(0, len(path)-2):
+                path_edges.append((int(path[i]),int(path[i+1])))
+
+            print(path_edges)
+
+            openNetworkGraph(min, max, path_edges)
+
+        
+        def copy_path():
+            sol = solutionBox.get('1.0', END).splitlines()[0]
+            path_input.delete(0, END)
+            path_input.insert(0, sol)
+    
+        min_label = Label(tabVisualise, text="Lowest node in network", width=30, justify=LEFT)
+        min_label.grid(row=0, column=0, sticky="w")
+        min_input = Entry(tabVisualise, width=30)
+        min_input.grid(row=0, column=1, sticky="w")
+        max_label = Label(tabVisualise, text="Highest node in network", width=30, justify=LEFT)
+        max_label.grid(row=1, column=0, sticky="w")
+        max_input = Entry(tabVisualise, width=30)
+        max_input.grid(row=1, column=1, sticky="w")
+        path_label = Label(tabVisualise, text="Path to highlight", width=30, justify=LEFT)
+        path_label.grid(row=2, column=0, sticky="w")
+        path_input = Entry(tabVisualise, width=30)
+        path_input.grid(row=2, column=1, sticky="w")
+        copy_button = Button(tabVisualise, text="Copy Path from Search Output", command=copy_path, width=60)
+        copy_button.grid(row=3, column=0, columnspan=2, sticky="w")
+        vis_button = Button(tabVisualise, text="Show Network Graph", command=initialiseNetworkGraph, width=60)
+        vis_button.grid(row=4, column=0, columnspan=2, sticky="w")
 
         # --------------------------------------------------------------------------------------------------------------
 
