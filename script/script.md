@@ -80,7 +80,7 @@
 - Average branching factor is 43.69
 - Complexity analysis shall use average branching factor, as larger branching factors are outliers
 <!-- -->
-- Due to the Six Degrees of Separation hypothesis, we can assume the shallowest solution depth to be roughly 6
+- Due to the Six Degrees of Separation hypothesis, we can assume the depth of the shallowest solution to be roughly 6
 - Maximum depth on a tree search is infinite
 - Step cost for all steps is 1
 <!-- -->
