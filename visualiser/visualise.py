@@ -1,13 +1,14 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-path_edges = [(6,0),(0,302)]
+path_edges = [(2065,1912),(1912,428),(428,594),(594,3980),(3980,4022)]
+# 2065 ▶ 1912 ▶ 428 ▶ 594 ▶ 3980 ▶ 4022
 
 def on_path(a, b):
     return ((a,b) in path_edges or (b,a) in path_edges)
 
 min = 0
-max = 302 
+max = 1000 
 
 G = nx.Graph()
 
