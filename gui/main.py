@@ -123,9 +123,9 @@ class MainWindow(Frame):
         def run_search(search, start, goal):
             
             #Prints algorithm, start node and goal node to console.
-            print("Algorithm: " + search)
-            print("Start node: " + str(start))
-            print("Goal node: " + str(goal))
+            # print("Algorithm: " + search)
+            # print("Start node: " + str(start))
+            # print("Goal node: " + str(goal))
             
             #Problem equals problems.SocialNetworkProblem(start, goal)
             problem = problems.SocialNetworkProblem(start, goal)
@@ -398,13 +398,13 @@ class MainWindow(Frame):
             if(len(path) == 1):
                 path = path_input.get().split(",")
 
-            print(path)
+            # print(path)
 
             path_edges = []
             for i in range(0, len(path)-2):
                 path_edges.append((int(path[i]),int(path[i+1])))
 
-            print(path_edges)
+            # print(path_edges)
 
             openNetworkGraph(min, max, path_edges)
 

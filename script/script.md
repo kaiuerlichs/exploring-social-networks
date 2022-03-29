@@ -15,7 +15,7 @@
 - Verify the "Six Degrees of Separation" hypothesis
 - Analyse different strategies, such as varying search algorithms, to solve the problem
 
-## Formal problem defintion
+## Formal problem definition
 - **States**: Each state is a person in the social network
 - **Initial state**: The person to start the path from
 - **Goal state**: The person to end the path on
@@ -117,7 +117,7 @@
     - Space complexity?
         - O(bm) = O(Infinity)
     - Complexities are bounded by the state space size, which is 4039 nodes
-        - In a tree-based search, we would have the unbounded above infinite complexitites
+        - In a tree-based search, we would have the unbounded above infinite complexities
 ### Depth-limited Search with limit l (Tree-based)
     - Complete?
         No - If there only is a solution deeper than the limit, it will not be found
@@ -160,7 +160,7 @@
 
 ## Verifying the "Six Degrees of Separation" hypothesis
 - Use Bidirectional BFS to compute optimal paths for 500 random pairs of nodes and analyse their path lengths
-- Results (Path length ; Occurence)
+- Results (Path length ; Occurrence)
     - 6 or below ; 490
     - 7 ; 10
 - 2% failure rate
@@ -194,7 +194,7 @@
 <!--  -->
 - BFS outperforms BiBFS
 - All other searches perform poorly
-- This shpws that while occasionally, IDDFS may outperform the BFS-based algorithms, it performance varies significantly
+- This shows that while occasionally, IDDFS may outperform the BFS-based algorithms, it performance varies significantly
 - BiBFS and BFS seem to offer acceptable speeds consistently -> confirms correct selection of search strategy
 - BiBFS should perform better than BFS consistently -> likely a implementation overhead issue
 
@@ -222,7 +222,7 @@
 ## Heuristic searches
 - Not viable on the dataset
     - The features provided do not give heuristic information on how close two people may be
-    - Even with potential heuristic information, the design of an admissable and consistent heuristic may not be possible as the information is hard to express in path-lengths
+    - Even with potential heuristic information, the design of an admissible and consistent heuristic may not be possible as the information is hard to express in path-lengths
     - Common heuristics such as Manhattan or Euclidean distances are not applicable as nodes do not exist in a dimensional space graph
 
 ## Constraint Satisfaction Problems
